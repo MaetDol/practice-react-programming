@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
 import Counter from './Counter';
 
 function App() {
@@ -8,11 +9,14 @@ function App() {
   }
   return (
     <>
-      <button style={{ backgroundColor: color }} onClick={onClick}>
-        좋아요
-      </button>
-      <Counter />
-      <Counter />
+      <p>안녕</p>
+      {ReactDOM.createPortal(
+        <div>
+          <p>안녕하세요</p>
+          <p>실전 리액트 프로그래밍 입니다.</p>
+        </div>,
+        document.getElementById('something'),
+      )}
     </>
   );
 }
