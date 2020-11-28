@@ -1,8 +1,9 @@
-import { Col, Descriptions, PageHeader, Row, Typography } from "antd";
+import { Col, Descriptions, PageHeader, Row, Space, Spin, Typography } from "antd";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { actions } from "../state";
+import useFetchInfo from "../../common/hook/useFetchInfo";
+import { actions, Types } from "../state";
 
 
 /**
@@ -17,16 +18,18 @@ export default function User({ match }) {
   const name = match.params.name;
   useEffect(() => {
     dispatch( actions.fetchUser(name) );
-  }, [name]);
+  }, [dispatch, name]);
 
-  const isFetched = true;
+  const { isFetched, isSlow } = useFetchInfo( Types.FetchUser );
 
   return (
     <Row justify="center">
       <Col xs={24} md={20} lg={14}>
         <PageHeader
           onBack={history.goBack}
-          title="사용자 정보"
+          title={<Space>사용자 정보
+            {isSlow && <Spin size="small" />}
+          </Space>}
         >
           {user && (
             <Descriptions layout="vertical" bordered column={1}>

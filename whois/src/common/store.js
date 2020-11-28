@@ -5,14 +5,16 @@ import searchReucder from '../search/state';
 import searchSaga from '../search/state/saga';
 import userReducer from '../user/state';
 import userSaga from '../user/state/saga';
-
+import commonReducer from '../common/state';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 const reducer = combineReducers({
+  common: commonReducer,
   search: searchReucder,
   user: userReducer,
 });
 const sagaMiddleware = createSagaMiddleware();
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers = composeWithDevTools({}); // window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(
   reducer,
   composeEnhancers(applyMiddleware(sagaMiddleware)),

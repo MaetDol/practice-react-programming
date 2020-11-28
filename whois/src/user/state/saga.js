@@ -1,13 +1,14 @@
 import { all, call, put, takeEvery } from "redux-saga/effects";
 import { callApi } from "../../common/util/api";
 import { Types, actions } from ".";
+import { makeFetchSaga } from "../../common/util/fetch";
 
 function* fetchUser({ name }) {
   const { isSuccess, data } = yield call( callApi, {
     url: '/user/search',
     params: { keyword: name },
   });
-  
+
   if( isSuccess && data ) {
     const user = data.find( item => item.name === name );
     if( user ) {
@@ -17,5 +18,10 @@ function* fetchUser({ name }) {
 }
 
 export default function* () {
-  yield all([takeEvery( Types.FetchUser, fetchUser )]);
+  yield all([
+    takeEvery( 
+      Types.FetchUser, 
+      makeFetchSaga({ fetchSaga: fetchUser, canCache: true }),
+    ),
+  ]);
 }
