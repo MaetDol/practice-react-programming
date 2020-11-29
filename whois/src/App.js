@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Search from './search/container/Search';
 import 'antd/dist/antd.css';
 import { Route } from 'react-router-dom';
 import User from './user/container/User';
 
 export default function App() {
+  useEffect(() => {
+    document.getElementById('init-loading').remove();
+  }, []);
   return (
     <>
       <Route exact path="/" component={Search} />
