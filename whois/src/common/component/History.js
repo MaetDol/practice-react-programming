@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
  * @param {object[]} param.items 
  */
 export default function History({ items }) {
-  console.log(items)
+
   return (
     <Timeline>
       {items.map( item => (
