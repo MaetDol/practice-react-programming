@@ -5,11 +5,19 @@ import { Route } from 'react-router-dom';
 import User from './user/container/User';
 import Login from './auth/container/Login';
 import Signup from './auth/container/Signup';
+import { useDispatch } from 'react-redux';
+import { actions as authActions } from './auth/state';
 
 export default function App() {
   useEffect(() => {
     document.getElementById('init-loading').remove();
   }, []);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch( authActions.fetchUser());
+  }, [dispatch]);
+
   return (
     <>
       <Route exact path="/" component={Search} />
