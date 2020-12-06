@@ -3,10 +3,11 @@ import { Row, Col, Typography } from 'antd';
 import Settings from '../component/Settings';
 import SearchInput from './SearchInput';
 import History from '../../common/component/History';
-import { actions } from '../state';
+import { actions, Types } from '../state';
 import { useDispatch, useSelector } from 'react-redux';
 import useNeedLogin from '../../common/hook/useNeedLogin';
 import { actions as authActions } from '../../auth/state';
+import useFetchInfo from '../../common/hook/useFetchInfo';
 
 export default function Search() {
   useNeedLogin();
@@ -20,6 +21,9 @@ export default function Search() {
   function logout() {
     dispatch( authActions.fetchLogout() );
   }
+
+  const historyDispatcher = () => dispatch( actions.fetchAllHistory() );
+  const { isFetched: isHistoryFetched } = useFetchInfo( Types.FetchAllHistory );
 
   return (
     <>
@@ -42,7 +46,11 @@ export default function Search() {
       </Row>
       <Row justify="center" style={{ marginTop: 50 }}>
         <Col xs={20} md={16} lg={12}>
-          <History items={history} />
+          <History 
+            items={history} 
+            isFetched={isHistoryFetched} 
+            dispatchHistory={historyDispatcher} 
+          />
         </Col>
       </Row>
     </>

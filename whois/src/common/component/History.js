@@ -1,50 +1,74 @@
 import { Space, Tag, Timeline, Typography } from 'antd';
-import { diffArrays, diffWords } from 'diff';
-import React from 'react';
+import { diffWords } from 'diff';
+import React, { createRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+
+const Bottom = React.forwardRef((props, ref) => 
+  <div {...props} ref={ref} />
+);
 
 /**
  * @param {object} param
  * @param {object[]} param.items 
+ * @param {boolean} param.isFetched 
+ * @param {()=>void} param.dispatchHistory
  */
-export default function History({ items }) {
+export default function History({ items, isFetched, dispatchHistory }) {
+
+  const thisRef = createRef();
+  useEffect(() => {
+    if( !thisRef?.current ) return;
+    if( !isFetched ) return;
+
+    const elem = thisRef.current;
+    const observer = new IntersectionObserver(([entry]) => {
+      if( !entry?.isIntersecting ) return;
+      console.log( entry )
+      dispatchHistory();
+    }, {threshold: 1});
+    observer.observe( elem );
+    return () => observer.unobserve( elem );
+  }, [thisRef, isFetched, dispatchHistory]);
 
   return (
-    <Timeline>
-      {items.map( item => (
-        <Timeline.Item key={item.id}>
-          <Space direction="vertical">
-            <Space style={{ flexWrap:'wrap' }}>
-            <Tag>
-                <Link to={`/user/${item.editor}`}>
-                  수정한 사람: {item.editor}
-                </Link>
-              </Tag>
+    <>
+      <Timeline>
+        {items.map( item => (
+          <Timeline.Item key={item.id}>
+            <Space direction="vertical">
+              <Space style={{ flexWrap:'wrap' }}>
               <Tag>
-                <Link to={`/user/${item.name}`}>
-                  수정한 사람: {item.name}
-                </Link>
-              </Tag>
-              <Tag>날짜: {item.date}</Tag>
-              <Tag>속성: {COLUMN_MAP[item.column]}</Tag>
+                  <Link to={`/user/${item.editor}`}>
+                    수정한 사람: {item.editor}
+                  </Link>
+                </Tag>
+                <Tag>
+                  <Link to={`/user/${item.name}`}>
+                    수정한 사람: {item.name}
+                  </Link>
+                </Tag>
+                <Tag>날짜: {item.date}</Tag>
+                <Tag>속성: {COLUMN_MAP[item.column]}</Tag>
+              </Space>
+              <Space>
+                {getDiff(item).map((diff, index) => (
+                  <Typography.Text
+                  key={index}
+                  delete={diff.removed}
+                  style={{
+                    color: diff.added ? 'blue' : diff.removed ? 'red' : 'grey',
+                  }}
+                  >
+                    {diff.value}
+                  </Typography.Text>
+                ))}
+              </Space>
             </Space>
-            <Space>
-              {getDiff(item).map((diff, index) => (
-                <Typography.Text
-                key={index}
-                delete={diff.removed}
-                style={{
-                  color: diff.added ? 'blue' : diff.removed ? 'red' : 'grey',
-                }}
-                >
-                  {diff.value}
-                </Typography.Text>
-              ))}
-            </Space>
-          </Space>
-        </Timeline.Item>
-      ))}
-    </Timeline>
+          </Timeline.Item>
+        ))}
+      </Timeline>
+      <Bottom ref={thisRef} />
+    </>
   );
 }
 

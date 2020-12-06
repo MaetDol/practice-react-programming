@@ -32,7 +32,9 @@ export default function User({ match }) {
     return () => dispatch( actions.initialize() );
   }, [dispatch]);
 
-  const { isFetched, isSlow } = useFetchInfo( Types.FetchUser );
+  const historyDispatcher = () => dispatch( actions.fetchUserHistory(name) );
+  const { isFetched: isHistoryFetched } = useFetchInfo( Types.FetchUserHistory );
+  const { isFetched } = useFetchInfo( Types.FetchUser );
 
   return (
     <Row justify="center">
@@ -65,7 +67,11 @@ export default function User({ match }) {
                 <TagList />  
               </Descriptions.Item>
               <Descriptions.Item label="수정 내역">
-                <History items={userHistory} />
+                <History 
+                  items={userHistory} 
+                  isFetched={isHistoryFetched} 
+                  dispatchHistory={historyDispatcher} 
+                />
               </Descriptions.Item>
             </Descriptions>
           )}

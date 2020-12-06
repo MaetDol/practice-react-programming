@@ -2,6 +2,7 @@ import { all, call, put, takeEvery, takeLeading } from "redux-saga/effects";
 import { callApi } from "../../common/util/api";
 import { Types, actions } from ".";
 import { deleteApiCache, makeFetchSaga } from "../../common/util/fetch";
+import { useSelector } from "react-redux";
 
 function* fetchUser({ name }) {
   const { isSuccess, data } = yield call( callApi, {
@@ -34,14 +35,14 @@ function* fetchUpdateUser({ user, key, value }) {
   }
 }
 
-function* fetchUserHistory({ name }) {
+function* fetchUserHistory({ name }, page) {
   const { isSuccess, data } = yield call( callApi, {
     url: '/history',
-    params: { name },
+    params: { name, page },
   });
-
+  
   if( isSuccess && data ) {
-    yield put( actions.setValue('userHistory', data) );
+    yield put( actions.appendLoadedHistory( data ) );
   }
 }
 

@@ -3,10 +3,11 @@ import { createReducer, createSetValueAction, FETCH_KEY, NOT_IMMUTABLE, setValue
 export const Types = {
   SetValue: 'user/SetValue',
   FetchUser: 'user/FetchUser',
-   FetchUpdateUser: 'user/FetchUpdateUser',
-   FetchUserHistory: 'user/FetchUserHistory',
-   AddHistory: 'user/AddHistory',
-   Initialize: 'user/Initialize',
+  FetchUpdateUser: 'user/FetchUpdateUser',
+  FetchUserHistory: 'user/FetchUserHistory',
+  AddHistory: 'user/AddHistory',
+  Initialize: 'user/Initialize',
+  AppendLoadedHistory: 'user/AppendLoadedHistory',
 };
 
 export const actions = {
@@ -22,6 +23,7 @@ export const actions = {
   fetchUserHistory: name => ({ type: Types.FetchUserHistory, name }),
   addHistory: history => ({ type: Types.AddHistory, history }),
   initialize: () => ({ type: Types.Initialize, [NOT_IMMUTABLE]:true }),
+  appendLoadedHistory: loadedHistory => ({ type: Types.AppendLoadedHistory, loadedHistory }),
 };
 
 const INITIAL_STATE = {
@@ -34,6 +36,7 @@ const reducer = createReducer( INITIAL_STATE, {
   [Types.AddHistory]: (state, action) => 
     (state.userHistory = [action.history, ...state.userHistory]),
   [Types.Initialize]: () => INITIAL_STATE,
+  [Types.AppendLoadedHistory]: (state, action) => state.userHistory.push( ...action.loadedHistory ),
 });
 
 export default reducer;
